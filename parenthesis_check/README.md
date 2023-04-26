@@ -1,3 +1,2 @@
-# Check correct of multiple types parenthesis
-
-# TODO ... write a puzzle statement
+# Задача
+Проверять наличие закрывающиъ скобок в строке. Реализовано на структуре стек для строк с одним и нескольким типом скобок.
