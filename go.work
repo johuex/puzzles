@@ -5,4 +5,5 @@ use (
 	./other/schedules/max_person
 	./other/schedules/max_profit
 	./leetcode/easy/contains_duplicate
+	./leetcode/easy/missing_number
 )
