@@ -1,7 +1,7 @@
-go 1.20
+go 1.22
 
 use (
-	./schedules/max_events
-	./schedules/max_person
-	./schedules/max_profit
+	./other/schedules/max_events
+	./other/schedules/max_person
+	./other/schedules/max_profit
 )
