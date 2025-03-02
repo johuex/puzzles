@@ -3,12 +3,10 @@ package main
 func containsDuplicate(nums []int) bool {
 	countElems := make(map[int]struct{})
 	for _, num := range nums {
-		_, ok := countElems[num]
-		if ok {
+		if _, ok := countElems[num]; ok {
 			return true
-		} else {
-			countElems[num] = struct{}{}
 		}
+		countElems[num] = struct{}{}
 	}
 	return false
 }
