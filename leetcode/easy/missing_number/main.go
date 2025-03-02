@@ -15,3 +15,14 @@ func missingNumber(nums []int) int {
 	}
 	return 0
 }
+
+func missingNumberMath(nums []int) int {
+	n := len(nums)
+	expectedSum := n * (n + 1) / 2
+	var actualSum int
+	for _, num := range nums {
+		actualSum += num
+	}
+
+	return expectedSum - actualSum
+}
