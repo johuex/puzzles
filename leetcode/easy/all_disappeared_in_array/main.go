@@ -17,3 +17,23 @@ func findDisappearedNumbers(nums []int) []int {
 	}
 	return res
 }
+
+func AbsInt(num int) int {
+	if num < 0 {
+		return -num
+	}
+	return num
+}
+
+func findDisappearedNumbersFastest(nums []int) []int {
+	for _, num := range nums {
+		nums[AbsInt(num)-1] = -AbsInt(nums[AbsInt(num)-1])
+	}
+	res := make([]int, 0)
+	for idx, num := range nums {
+		if num > 0 {
+			res = append(res, idx+1)
+		}
+	}
+	return res
+}
