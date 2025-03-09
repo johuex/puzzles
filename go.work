@@ -7,4 +7,5 @@ use (
 	./leetcode/easy/contains_duplicate
 	./leetcode/easy/missing_number
 	./leetcode/easy/all_disappeared_in_array
+	./leetcode/easy/single_number
 )
