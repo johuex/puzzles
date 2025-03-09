@@ -9,4 +9,4 @@ Solutions:
 1. `singleNumberXOR` --> CPU: O(N), RAM: O(1), The XOR ( ^ ) is an logical operator that will return 1 when the bits are different and 0 elsewhere, only one loop.
 
 tags:
-`array` `math` `bit manipulation`
+`array` `bit manipulation`
