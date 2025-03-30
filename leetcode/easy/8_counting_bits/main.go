@@ -1,4 +1,4 @@
-package counting_bits
+package countingbits
 
 import "math/bits"
 

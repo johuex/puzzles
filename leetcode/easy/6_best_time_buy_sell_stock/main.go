@@ -1,4 +1,4 @@
-package best_stock
+package beststock
 
 import "sort"
 

@@ -1,4 +1,4 @@
-package single_number
+package singlenumber
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package range_sum_query
+package rangesumquery
 
 import (
 	"testing"

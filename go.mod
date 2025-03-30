@@ -1,4 +1,4 @@
-module range_sum_query
+module leetcode
 
 go 1.22
 
