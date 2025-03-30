@@ -21,15 +21,14 @@ func hasCycleHash(head *ListNode) bool {
 }
 
 func hasCycleFastSlowPTR(head *ListNode) bool {
-	pointers := make(map[*ListNode]struct{})
-	pointers[head] = struct{}{}
-	for head != nil {
-		if _, ok := pointers[head.Next]; ok {
+	slowPtr := head
+	fastPtr := head
+	for fastPtr != nil && fastPtr.Next != nil {
+		slowPtr = slowPtr.Next
+		fastPtr = fastPtr.Next.Next
+		if fastPtr == slowPtr {
 			return true
-		} else {
-			pointers[head] = struct{}{}
 		}
-		head = head.Next
 	}
 	return false
 }

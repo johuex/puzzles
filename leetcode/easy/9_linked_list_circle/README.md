@@ -9,7 +9,8 @@ Return true if there is a cycle in the linked list. Otherwise, return false.
 [url](https://leetcode.com/problems/linked-list-cycle/description/)
 
 Solutions:
-1. 
+1. `hasCycleHash` -- solution with set (on hashmap) that store all gone nodes, O(N) CPU and O(N) RAM
+2. `hasCycleFastSlowPTR` -- solution with fast and slow pointers. when fast and slow pointers are equal -- circle catch, O(N) CPU, O(1) RAM
 
 
 tags:

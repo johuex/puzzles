@@ -21,10 +21,10 @@ func TestHasCycle(t *testing.T) {
 		res := hasCycleHash(&nodes1[0])
 		assert.Equal(t, true, res)
 	})
-	// t.Run("1FastSlowPTR", func(t *testing.T) {
-	// 	res := hasCycle(&nodes1[0])
-	// 	assert.Equal(t, true, res)
-	// })
+	t.Run("1FastSlowPTR", func(t *testing.T) {
+		res := hasCycleFastSlowPTR(&nodes1[0])
+		assert.Equal(t, true, res)
+	})
 
 	nodes2 := []ListNode{
 		{Val: 1},
@@ -36,12 +36,20 @@ func TestHasCycle(t *testing.T) {
 		res := hasCycleHash(&nodes2[0])
 		assert.Equal(t, true, res)
 	})
+	t.Run("2FastSlowPTR", func(t *testing.T) {
+		res := hasCycleFastSlowPTR(&nodes2[0])
+		assert.Equal(t, true, res)
+	})
 
 	nodes3 := []ListNode{
 		{Val: 1},
 	}
 	t.Run("3Hash", func(t *testing.T) {
 		res := hasCycleHash(&nodes3[0])
+		assert.Equal(t, false, res)
+	})
+	t.Run("3FastSlowPTR", func(t *testing.T) {
+		res := hasCycleFastSlowPTR(&nodes3[0])
 		assert.Equal(t, false, res)
 	})
 }
