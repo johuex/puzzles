@@ -1,0 +1,11 @@
+                                                    QUERY PLAN                                                     
+-------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=142.54..159.84 rows=200 width=12) (actual time=0.094..0.097 rows=2 loops=1)
+   Group Key: teacher_id
+   ->  Sort  (cost=142.54..147.64 rows=2040 width=8) (actual time=0.082..0.084 rows=8 loops=1)
+         Sort Key: teacher_id, subject_id
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on teacher t  (cost=0.00..30.40 rows=2040 width=8) (actual time=0.017..0.020 rows=8 loops=1)
+ Planning Time: 0.617 ms
+ Execution Time: 0.199 ms
+(8 rows)
