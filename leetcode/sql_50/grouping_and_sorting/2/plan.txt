@@ -1,0 +1,12 @@
+QUERY PLAN                                                                                                     |
+---------------------------------------------------------------------------------------------------------------+
+GroupAggregate  (cost=27.03..27.13 rows=6 width=12) (actual time=0.126..0.128 rows=2 loops=1)                  |
+  Group Key: activity_date                                                                                     |
+  ->  Sort  (cost=27.03..27.04 rows=6 width=8) (actual time=0.111..0.112 rows=9 loops=1)                       |
+        Sort Key: activity_date, user_id                                                                       |
+        Sort Method: quicksort  Memory: 25kB                                                                   |
+        ->  Seq Scan on activity a  (cost=0.00..26.95 rows=6 width=8) (actual time=0.061..0.064 rows=9 loops=1)|
+              Filter: ((activity_date >= '2019-06-28'::date) AND (activity_date <= '2019-07-27'::date))        |
+              Rows Removed by Filter: 2                                                                        |
+Planning Time: 0.250 ms                                                                                        |
+Execution Time: 0.261 ms                                                                                       |
