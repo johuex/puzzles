@@ -1,0 +1,31 @@
+# own solution
+QUERY PLAN                                                                                                             |
+-----------------------------------------------------------------------------------------------------------------------+
+Hash Join  (cost=40.50..76.42 rows=8 width=20) (actual time=0.053..0.057 rows=2 loops=1)                               |
+  Hash Cond: ((s.product_id = s_1.product_id) AND (s.year = (min(s_1.year))))                                          |
+  ->  Seq Scan on sales s  (cost=0.00..27.00 rows=1700 width=20) (actual time=0.015..0.016 rows=3 loops=1)             |
+  ->  Hash  (cost=37.50..37.50 rows=200 width=8) (actual time=0.029..0.029 rows=2 loops=1)                             |
+        Buckets: 1024  Batches: 1  Memory Usage: 9kB                                                                   |
+        ->  HashAggregate  (cost=35.50..37.50 rows=200 width=8) (actual time=0.019..0.021 rows=2 loops=1)              |
+              Group Key: s_1.product_id                                                                                |
+              Batches: 1  Memory Usage: 40kB                                                                           |
+              ->  Seq Scan on sales s_1  (cost=0.00..27.00 rows=1700 width=8) (actual time=0.001..0.002 rows=3 loops=1)|
+Planning Time: 0.168 ms                                                                                                |
+Execution Time: 0.134 ms                                                                                               |
+
+
+
+
+# another solution from top
+                                                      QUERY PLAN                                                      
+----------------------------------------------------------------------------------------------------------------------
+ Subquery Scan on p_1st_yr  (cost=118.34..169.22 rows=8 width=16) (actual time=0.052..0.056 rows=2 loops=1)
+   Filter: (p_1st_yr.first_year = p_1st_yr.year)
+   Rows Removed by Filter: 1
+   ->  WindowAgg  (cost=118.34..147.97 rows=1700 width=24) (actual time=0.050..0.053 rows=3 loops=1)
+         ->  Sort  (cost=118.22..122.47 rows=1700 width=16) (actual time=0.038..0.038 rows=3 loops=1)
+               Sort Key: sales.product_id
+               Sort Method: quicksort  Memory: 25kB
+               ->  Seq Scan on sales  (cost=0.00..27.00 rows=1700 width=16) (actual time=0.018..0.020 rows=3 loops=1)
+ Planning Time: 0.144 ms
+ Execution Time: 0.149 ms
