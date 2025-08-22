@@ -1,0 +1,10 @@
+QUERY PLAN                                                                                                  |
+------------------------------------------------------------------------------------------------------------+
+HashAggregate  (cost=11.05..11.93 rows=23 width=516) (actual time=0.037..0.039 rows=1 loops=1)              |
+  Group Key: class                                                                                          |
+  Filter: (count(student) >= 5)                                                                             |
+  Batches: 1  Memory Usage: 24kB                                                                            |
+  Rows Removed by Filter: 3                                                                                 |
+  ->  Seq Scan on courses c  (cost=0.00..10.70 rows=70 width=1032) (actual time=0.015..0.017 rows=9 loops=1)|
+Planning Time: 0.087 ms                                                                                     |
+Execution Time: 0.078 ms                                                                                    |
