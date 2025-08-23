@@ -1,0 +1,16 @@
+QUERY PLAN                                                     
+-------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=200.39..219.84 rows=1 width=4) (actual time=0.076..0.078 rows=2 loops=1)
+   Group Key: customer.customer_id
+   Filter: (count(DISTINCT customer.product_key) = (InitPlan 1).col1)
+   Rows Removed by Filter: 1
+   InitPlan 1
+     ->  Aggregate  (cost=41.88..41.88 rows=1 width=8) (actual time=0.007..0.007 rows=1 loops=1)
+           ->  Seq Scan on product  (cost=0.00..35.50 rows=2550 width=4) (actual time=0.004..0.004 rows=2 loops=1)
+   ->  Sort  (cost=158.51..164.16 rows=2260 width=8) (actual time=0.055..0.056 rows=5 loops=1)
+         Sort Key: customer.customer_id, customer.product_key
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on customer  (cost=0.00..32.60 rows=2260 width=8) (actual time=0.011..0.012 rows=5 loops=1)
+ Planning Time: 0.318 ms
+ Execution Time: 0.130 ms
+(13 rows)
