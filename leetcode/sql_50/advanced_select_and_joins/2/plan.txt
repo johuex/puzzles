@@ -1,0 +1,63 @@
+--my solution
+
+QUERY PLAN                                                                                                                                 |
+-------------------------------------------------------------------------------------------------------------------------------------------+
+Unique  (cost=81.00..81.09 rows=12 width=8) (actual time=0.166..0.173 rows=4 loops=1)                                                      |
+  ->  Sort  (cost=81.00..81.03 rows=12 width=8) (actual time=0.165..0.169 rows=4 loops=1)                                                  |
+        Sort Key: e1.employee_id, e1.department_id                                                                                         |
+        Sort Method: quicksort  Memory: 25kB                                                                                               |
+        ->  Append  (cost=0.00..80.79 rows=12 width=8) (actual time=0.043..0.117 rows=4 loops=1)                                           |
+              ->  Seq Scan on employee e1  (cost=0.00..25.00 rows=6 width=8) (actual time=0.042..0.044 rows=2 loops=1)                     |
+                    Filter: (primary_flag = 'Y'::text)                                                                                     |
+                    Rows Removed by Filter: 5                                                                                              |
+              ->  Hash Join  (cost=30.51..55.73 rows=6 width=8) (actual time=0.065..0.070 rows=2 loops=1)                                  |
+                    Hash Cond: (e3.employee_id = e2.employee_id)                                                                           |
+                    ->  Seq Scan on employee e3  (cost=0.00..22.00 rows=1200 width=8) (actual time=0.002..0.003 rows=7 loops=1)            |
+                    ->  Hash  (cost=30.50..30.50 rows=1 width=4) (actual time=0.033..0.034 rows=2 loops=1)                                 |
+                          Buckets: 1024  Batches: 1  Memory Usage: 9kB                                                                     |
+                          ->  HashAggregate  (cost=28.00..30.50 rows=1 width=4) (actual time=0.020..0.023 rows=2 loops=1)                  |
+                                Group Key: e2.employee_id                                                                                  |
+                                Filter: (count(e2.employee_id) = 1)                                                                        |
+                                Batches: 1  Memory Usage: 40kB                                                                             |
+                                Rows Removed by Filter: 2                                                                                  |
+                                ->  Seq Scan on employee e2  (cost=0.00..22.00 rows=1200 width=4) (actual time=0.003..0.004 rows=7 loops=1)|
+Planning Time: 0.769 ms                                                                                                                    |
+Execution Time: 0.316 ms                                                                                                                   |
+
+
+
+--another solution from top
+
+                                                       QUERY PLAN                                                        
+-------------------------------------------------------------------------------------------------------------------------
+ Subquery Scan on employee_total  (cost=83.46..122.37 rows=12 width=8) (actual time=0.074..0.092 rows=4 loops=1)
+   Filter: ((employee_total.cnt = 1) OR (employee_total.primary_flag = 'Y'::text))
+   Rows Removed by Filter: 3
+   ->  WindowAgg  (cost=83.46..104.37 rows=1200 width=48) (actual time=0.071..0.083 rows=7 loops=1)
+         ->  Sort  (cost=83.37..86.37 rows=1200 width=40) (actual time=0.050..0.051 rows=7 loops=1)
+               Sort Key: employee.employee_id
+               Sort Method: quicksort  Memory: 25kB
+               ->  Seq Scan on employee  (cost=0.00..22.00 rows=1200 width=40) (actual time=0.017..0.019 rows=7 loops=1)
+ Planning Time: 0.287 ms
+ Execution Time: 0.188 ms
+(10 rows)
+
+
+
+
+--another solution from top 
+
+QUERY PLAN                                                                                                                   |
+-----------------------------------------------------------------------------------------------------------------------------+
+Seq Scan on employee  (cost=30.50..58.50 rows=603 width=8) (actual time=0.044..0.047 rows=4 loops=1)                         |
+  Filter: ((primary_flag = 'Y'::text) OR (ANY (employee_id = (hashed SubPlan 1).col1)))                                      |
+  Rows Removed by Filter: 3                                                                                                  |
+  SubPlan 1                                                                                                                  |
+    ->  HashAggregate  (cost=28.00..30.50 rows=1 width=4) (actual time=0.016..0.018 rows=2 loops=1)                          |
+          Group Key: employee_1.employee_id                                                                                  |
+          Filter: (count(employee_1.employee_id) = 1)                                                                        |
+          Batches: 1  Memory Usage: 40kB                                                                                     |
+          Rows Removed by Filter: 2                                                                                          |
+          ->  Seq Scan on employee employee_1  (cost=0.00..22.00 rows=1200 width=4) (actual time=0.001..0.003 rows=7 loops=1)|
+Planning Time: 0.111 ms                                                                                                      |
+Execution Time: 0.135 ms                                                                                                     |
