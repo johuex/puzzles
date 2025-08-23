@@ -1,0 +1,11 @@
+QUERY PLAN                                                                                                         |
+-------------------------------------------------------------------------------------------------------------------+
+Sort  (cost=53.54..54.04 rows=200 width=12) (actual time=0.085..0.086 rows=3 loops=1)                              |
+  Sort Key: user_id                                                                                                |
+  Sort Method: quicksort  Memory: 25kB                                                                             |
+  ->  HashAggregate  (cost=43.90..45.90 rows=200 width=12) (actual time=0.038..0.040 rows=3 loops=1)               |
+        Group Key: user_id                                                                                         |
+        Batches: 1  Memory Usage: 40kB                                                                             |
+        ->  Seq Scan on followers f  (cost=0.00..32.60 rows=2260 width=4) (actual time=0.023..0.024 rows=4 loops=1)|
+Planning Time: 1.315 ms                                                                                            |
+Execution Time: 0.219 ms                                                                                           |
