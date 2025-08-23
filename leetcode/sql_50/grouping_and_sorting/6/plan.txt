@@ -1,0 +1,12 @@
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=50.75..50.76 rows=1 width=4) (actual time=0.045..0.046 rows=1 loops=1)
+   ->  HashAggregate  (cost=48.25..50.75 rows=1 width=4) (actual time=0.038..0.041 rows=4 loops=1)
+         Group Key: n.num
+         Filter: (count(n.num) = 1)
+         Batches: 1  Memory Usage: 40kB
+         Rows Removed by Filter: 2
+         ->  Seq Scan on mynumbers n  (cost=0.00..35.50 rows=2550 width=4) (actual time=0.016..0.017 rows=8 loops=1)
+ Planning Time: 0.300 ms
+ Execution Time: 0.144 ms
+(9 rows)
