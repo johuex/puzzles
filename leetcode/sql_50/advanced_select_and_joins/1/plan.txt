@@ -1,0 +1,22 @@
+                                                            QUERY PLAN                                                            
+----------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=117.49..375.22 rows=3428 width=102) (actual time=0.310..0.313 rows=1 loops=1)
+   Group Key: e1.reports_to, e2.name
+   ->  Incremental Sort  (cost=117.49..289.52 rows=3428 width=66) (actual time=0.169..0.171 rows=2 loops=1)
+         Sort Key: e1.reports_to, e2.name
+         Presorted Key: e1.reports_to
+         Full-sort Groups: 1  Sort Method: quicksort  Average Memory: 25kB  Peak Memory: 25kB
+         ->  Merge Join  (cost=116.86..172.41 rows=3428 width=66) (actual time=0.118..0.122 rows=2 loops=1)
+               Merge Cond: (e1.reports_to = e2.employee_id)
+               ->  Sort  (cost=58.32..60.38 rows=826 width=8) (actual time=0.069..0.070 rows=3 loops=1)
+                     Sort Key: e1.reports_to
+                     Sort Method: quicksort  Memory: 25kB
+                     ->  Seq Scan on employees e1  (cost=0.00..18.30 rows=826 width=8) (actual time=0.046..0.048 rows=4 loops=1)
+                           Filter: (employee_id IS NOT NULL)
+               ->  Sort  (cost=58.54..60.62 rows=830 width=62) (actual time=0.042..0.043 rows=4 loops=1)
+                     Sort Key: e2.employee_id
+                     Sort Method: quicksort  Memory: 25kB
+                     ->  Seq Scan on employees e2  (cost=0.00..18.30 rows=830 width=62) (actual time=0.023..0.024 rows=4 loops=1)
+ Planning Time: 0.728 ms
+ Execution Time: 0.457 ms
+(19 rows)
