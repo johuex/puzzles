@@ -1,0 +1,34 @@
+-- first own solution
+                                                      QUERY PLAN                                                       
+-----------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=47.73..48.07 rows=138 width=4) (actual time=0.086..0.088 rows=1 loops=1)
+   Sort Key: e.employee_id
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on employees e  (cost=20.38..42.83 rows=138 width=4) (actual time=0.052..0.052 rows=1 loops=1)
+         Filter: ((salary < 30000) AND (NOT (ANY (manager_id = (hashed SubPlan 1).col1))))
+         Rows Removed by Filter: 5
+         SubPlan 1
+           ->  Seq Scan on employees e2  (cost=0.00..18.30 rows=830 width=4) (actual time=0.004..0.005 rows=6 loops=1)
+ Planning Time: 0.310 ms
+ Execution Time: 0.157 ms
+(10 rows)
+
+
+
+-- second own solution
+                                                        QUERY PLAN                                                         
+---------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=59.13..59.48 rows=138 width=4) (actual time=0.074..0.076 rows=1 loops=1)
+   Sort Key: e1.employee_id
+   Sort Method: quicksort  Memory: 25kB
+   ->  Hash Anti Join  (cost=28.68..54.23 rows=138 width=4) (actual time=0.059..0.061 rows=1 loops=1)
+         Hash Cond: (e1.manager_id = e2.employee_id)
+         ->  Seq Scan on employees e1  (cost=0.00..20.38 rows=275 width=8) (actual time=0.024..0.025 rows=2 loops=1)
+               Filter: ((manager_id IS NOT NULL) AND (salary < 30000))
+               Rows Removed by Filter: 4
+         ->  Hash  (cost=18.30..18.30 rows=830 width=4) (actual time=0.017..0.017 rows=6 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on employees e2  (cost=0.00..18.30 rows=830 width=4) (actual time=0.004..0.005 rows=6 loops=1)
+ Planning Time: 0.440 ms
+ Execution Time: 0.176 ms
+(13 rows)
