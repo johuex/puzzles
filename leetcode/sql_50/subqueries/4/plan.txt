@@ -1,0 +1,35 @@
+# my own solution
+                                                              QUERY PLAN                                                              
+--------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=101.83..102.31 rows=194 width=68) (actual time=0.120..0.122 rows=4 loops=1)
+   ->  Sort  (cost=101.81..102.31 rows=200 width=68) (actual time=0.119..0.120 rows=10 loops=1)
+         Sort Key: visited_on
+         Sort Method: quicksort  Memory: 25kB
+         ->  HashAggregate  (cost=89.67..94.17 rows=200 width=68) (actual time=0.092..0.095 rows=10 loops=1)
+               Group Key: visited_on, round((sum(amount) OVER (?))::numeric, 2), round(((sum(amount) OVER (?))::numeric / 7.0), 2)
+               Batches: 1  Memory Usage: 40kB
+               ->  WindowAgg  (cost=58.61..83.44 rows=830 width=68) (actual time=0.064..0.084 rows=11 loops=1)
+                     ->  Sort  (cost=58.54..60.62 rows=830 width=8) (actual time=0.046..0.047 rows=11 loops=1)
+                           Sort Key: visited_on
+                           Sort Method: quicksort  Memory: 25kB
+                           ->  Seq Scan on customer c  (cost=0.00..18.30 rows=830 width=8) (actual time=0.023..0.024 rows=11 loops=1)
+ Planning Time: 0.295 ms
+ Execution Time: 0.293 ms
+(14 rows)
+
+
+# another solution
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=32.21..36.09 rows=194 width=68) (actual time=0.065..0.077 rows=4 loops=1)
+   ->  WindowAgg  (cost=32.09..36.09 rows=200 width=68) (actual time=0.058..0.075 rows=10 loops=1)
+         ->  Sort  (cost=32.09..32.59 rows=200 width=12) (actual time=0.041..0.042 rows=10 loops=1)
+               Sort Key: customer.visited_on
+               Sort Method: quicksort  Memory: 25kB
+               ->  HashAggregate  (cost=22.45..24.45 rows=200 width=12) (actual time=0.017..0.019 rows=10 loops=1)
+                     Group Key: customer.visited_on
+                     Batches: 1  Memory Usage: 40kB
+                     ->  Seq Scan on customer  (cost=0.00..18.30 rows=830 width=8) (actual time=0.008..0.009 rows=11 loops=1)
+ Planning Time: 0.124 ms
+ Execution Time: 0.161 ms
+(11 rows)
