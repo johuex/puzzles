@@ -1,0 +1,40 @@
+# my own solution
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=92.70..92.70 rows=1 width=36) (actual time=0.226..0.227 rows=1 loops=1)
+   ->  Sort  (cost=92.70..93.20 rows=200 width=36) (actual time=0.224..0.225 rows=1 loops=1)
+         Sort Key: (sum((count(ra1.requester_id)))) DESC
+         Sort Method: top-N heapsort  Memory: 25kB
+         ->  HashAggregate  (cost=89.20..91.70 rows=200 width=36) (actual time=0.093..0.096 rows=4 loops=1)
+               Group Key: ra1.requester_id
+               Batches: 1  Memory Usage: 40kB
+               ->  Append  (cost=40.60..87.20 rows=400 width=12) (actual time=0.032..0.044 rows=6 loops=1)
+                     ->  HashAggregate  (cost=40.60..42.60 rows=200 width=12) (actual time=0.031..0.033 rows=3 loops=1)
+                           Group Key: ra1.requester_id
+                           Batches: 1  Memory Usage: 40kB
+                           ->  Seq Scan on requestaccepted ra1  (cost=0.00..30.40 rows=2040 width=4) (actual time=0.015..0.016 rows=4 loops=1)
+                     ->  HashAggregate  (cost=40.60..42.60 rows=200 width=12) (actual time=0.008..0.009 rows=3 loops=1)
+                           Group Key: ra2.accepter_id
+                           Batches: 1  Memory Usage: 40kB
+                           ->  Seq Scan on requestaccepted ra2  (cost=0.00..30.40 rows=2040 width=4) (actual time=0.001..0.002 rows=4 loops=1)
+ Planning Time: 1.449 ms
+ Execution Time: 0.476 ms
+(18 rows)
+
+
+-- another solution
+                                                                      QUERY PLAN                                                                       
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=104.60..104.60 rows=1 width=12) (actual time=0.085..0.087 rows=1 loops=1)
+   ->  Sort  (cost=104.60..105.10 rows=200 width=12) (actual time=0.084..0.084 rows=1 loops=1)
+         Sort Key: (count(*)) DESC
+         Sort Method: top-N heapsort  Memory: 25kB
+         ->  HashAggregate  (cost=101.60..103.60 rows=200 width=12) (actual time=0.038..0.041 rows=4 loops=1)
+               Group Key: requestaccepted.requester_id
+               Batches: 1  Memory Usage: 40kB
+               ->  Append  (cost=0.00..81.20 rows=4080 width=4) (actual time=0.017..0.022 rows=8 loops=1)
+                     ->  Seq Scan on requestaccepted  (cost=0.00..30.40 rows=2040 width=4) (actual time=0.017..0.018 rows=4 loops=1)
+                     ->  Seq Scan on requestaccepted requestaccepted_1  (cost=0.00..30.40 rows=2040 width=4) (actual time=0.002..0.002 rows=4 loops=1)
+ Planning Time: 1.705 ms
+ Execution Time: 0.147 ms
+(12 rows)
