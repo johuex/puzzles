@@ -1,4 +1,4 @@
-package mushrooms
+package a
 
 import (
 	"bufio"
