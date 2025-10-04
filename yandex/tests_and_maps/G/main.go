@@ -18,7 +18,7 @@ func main() {
 	line = strings.TrimSpace(line)
 	lineArr := strings.Split(line, " ")
 	n, _ := strconv.Atoi(lineArr[0])
-	//m, _ := strconv.Atoi(lineArr[1])
+	m, _ := strconv.Atoi(lineArr[1])
 
 	// create table
 	table := make([]string, n)
@@ -29,53 +29,193 @@ func main() {
 	}
 
 	// logic
-	ans := fiveRow(table)
+	ans := fiveRow(n, m, table)
 	// output
 	writer.WriteString(ans)
 	writer.WriteByte('\n')
 }
 
-func fiveRow(table []string) string {
+func fiveRow(n, m int, table []string) string {
 	var ans bool
 
-	lineSet := make(map[int]map[rune]struct{})
-	vertSet := make(map[int]map[rune]struct{})
+	lineSet := make(map[int][]rune, n)
 
-	// transform input
+	// transform input to 2D array
 	for i, row := range table {
-		lineSet[i] = make(map[rune]struct{})
+		lineSet[i] = make([]rune, m)
 		for j, sym := range row {
-			if _, ok := vertSet[j]; !ok {
-				vertSet[j] = make(map[rune]struct{})
+			lineSet[i][j] = sym
+		}
+	}
+
+	// check rows
+	for i := 0; i < len(lineSet) && !ans; i++ {
+		runeCount := 0
+		negativeRune := '.'
+		for j := 0; j < len(lineSet[i]) && !ans; j++ {
+			if negativeRune == '.' {
+				negativeRune = negativeSwitch(lineSet[i][j])
 			}
-			vertSet[j][sym] = struct{}{}
-			lineSet[i][sym] = struct{}{}
-		}
-	}
-	for _, raw := range lineSet {
-		_, xOk := raw['X']
-		_, yOk := raw['Y']
-		if !(xOk && yOk) {
-			ans = true
-		}
-		break
-	}
-	if !ans {
-		for _, raw := range vertSet {
-			_, xOk := raw['X']
-			_, yOk := raw['Y']
-			if !(xOk && yOk) {
+			if lineSet[i][j] == negativeRune || lineSet[i][j] == '.' {
+				// so we drop check sequence only in case of matching rune with negative rune
+				if lineSet[i][j] == '.' {
+					runeCount = 0
+				} else {
+					runeCount = 1
+				}
+				negativeRune = negativeSwitch(lineSet[i][j])
+				continue
+			}
+			runeCount += 1
+			if runeCount == 5 {
 				ans = true
 			}
-			break
+		}
+	}
+
+	// check columns
+	rows := len(lineSet)
+	cols := len(lineSet[0])
+
+	for j := 0; j < cols && !ans; j++ {
+		runeCount := 0
+		negativeRune := '.'
+		for i := 0; i < rows && !ans; i++ {
+			if negativeRune == '.' {
+				negativeRune = negativeSwitch(lineSet[i][j])
+			}
+			if lineSet[i][j] == negativeRune || lineSet[i][j] == '.' {
+				// so we drop check sequence only in case of matching rune with negative rune
+				if lineSet[i][j] == '.' {
+					runeCount = 0
+				} else {
+					runeCount = 1
+				}
+				negativeRune = negativeSwitch(lineSet[i][j])
+				continue
+			}
+			runeCount += 1
+			if runeCount == 5 {
+				ans = true
+			}
 		}
 	}
 	if !ans {
-		// TODO: как проверить диагонали ???
+		runeCount := 0
+		negativeRune := '.'
+		for i := 0; !ans && i < rows && i < cols; i++ {
+			if negativeRune == '.' {
+				negativeRune = negativeSwitch(lineSet[i][i])
+			}
+			if lineSet[i][i] == negativeRune || lineSet[i][i] == '.' {
+				// so we drop check sequence only in case of matching rune with negative rune
+				if lineSet[i][i] == '.' {
+					runeCount = 0
+				} else {
+					runeCount = 1
+				}
+				negativeRune = negativeSwitch(lineSet[i][i])
+				continue
+			}
+			runeCount += 1
+			if runeCount == 5 {
+				ans = true
+			}
+		}
+
+		runeCount = 0
+		negativeRune = '.'
+		for i := 0; !ans && i < rows && i < cols; i++ {
+			if negativeRune == '.' {
+				negativeRune = negativeSwitch(lineSet[i][i])
+			}
+			if lineSet[i][i] == negativeRune || lineSet[i][i] == '.' {
+				// so we drop check sequence only in case of matching rune with negative rune
+				if lineSet[i][i] == '.' {
+					runeCount = 0
+				} else {
+					runeCount = 1
+				}
+				negativeRune = negativeSwitch(lineSet[i][i])
+				continue
+			}
+			runeCount += 1
+			if runeCount == 5 {
+				ans = true
+			}
+		}
+	}
+	// check diags
+	if !ans {
+		for d := 0; !ans && d < rows+cols-1; d++ {
+			runeCount := 0
+			negativeRune := '.'
+			for i := 0; !ans && i < rows; i++ {
+				j := d - i
+				if j >= 0 && j < cols {
+					if negativeRune == '.' {
+						negativeRune = negativeSwitch(lineSet[i][j])
+					}
+					if lineSet[i][j] == negativeRune || lineSet[i][j] == '.' {
+						// so we drop check sequence only in case of matching rune with negative rune
+						if lineSet[i][j] == '.' {
+							runeCount = 0
+						} else {
+							runeCount = 1
+						}
+						negativeRune = negativeSwitch(lineSet[i][j])
+						continue
+					}
+					runeCount += 1
+					if runeCount == 5 {
+						ans = true
+					}
+				}
+			}
+		}
+
+		for d := 0; !ans && d < rows+cols-1; d++ {
+			runeCount := 0
+			negativeRune := '.'
+			for i := 0; !ans && i < rows; i++ {
+				j := (cols - 1) - (d - i)
+				if j >= 0 && j < cols {
+					if negativeRune == '.' {
+						negativeRune = negativeSwitch(lineSet[i][j])
+					}
+					if lineSet[i][j] == negativeRune || lineSet[i][j] == '.' {
+						// so we drop check sequence only in case of matching rune with negative rune
+						if lineSet[i][j] == '.' {
+							runeCount = 0
+						} else {
+							runeCount = 1
+						}
+						negativeRune = negativeSwitch(lineSet[i][j])
+						continue
+					}
+					runeCount += 1
+					if runeCount == 5 {
+						ans = true
+					}
+				}
+			}
+		}
 	}
 
 	if ans {
 		return "Yes"
 	}
 	return "No"
+}
+
+func negativeSwitch(elem rune) rune {
+	switch elem {
+	case 'X':
+		return 'O'
+	case 'O':
+		return 'X'
+	default:
+		// special case
+		return '.'
+	}
 }
