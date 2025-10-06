@@ -92,3 +92,23 @@ func sumNum(n, k int) int {
 
 	return n + ans
 }
+
+func sumNum1(n, k int) int {
+	// solution from answer
+	if k > 0 && n%2 != 0 {
+		n += n % 10
+		k -= 1
+	}
+	// смысл в том, что есть циклы из четных чисел и мы можем их посчитать
+	if n%10 == 0 {
+		print(n)
+	} else {
+		cycles := k / 4
+		n += (2 + 4 + 6 + 8) * cycles
+		k %= 4
+		for range k {
+			n += n % 10
+		}
+	}
+	return n
+}

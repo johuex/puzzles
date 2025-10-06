@@ -2,6 +2,7 @@ package b
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -32,15 +33,19 @@ func main() {
 }
 
 func route(a, b, c, v0, v1, v2 int) string {
-	r1 := float64(b)/float64(v0) + float64(c)/float64(v1) + float64(a)/float64(v2)
-	r2 := float64(b)/float64(v0) + float64(b)/float64(v1) + float64(a)/float64(v0) + float64(a)/float64(v1)
-	r3 := float64(b)/float64(v0) + float64(b)/float64(v1) + float64(b)/float64(v0) + float64(c)/float64(v0) + float64(c)/float64(v1) + float64(b)/float64(v1)
-	r4 := float64(a)/float64(v0) + float64(a)/float64(v1) + float64(a)/float64(v0) + float64(c)/float64(v0) + float64(c)/float64(v1) + float64(a)/float64(v1)
-	r5 := float64(b)/float64(v0) + float64(c)/float64(v1) + float64(c)/float64(v2) + float64(b)/float64(v2)
-	r6 := float64(a)/float64(v0) + float64(c)/float64(v1) + float64(c)/float64(v2) + float64(a)/float64(v2)
-	r7 := float64(a)/float64(v0) + float64(c)/float64(v1) + float64(b)/float64(v2)
-	r8 := float64(b)/float64(v0) + float64(b)/float64(v1) + float64(a)/float64(v0) + float64(c)/float64(v0) + float64(c)/float64(v1) + float64(a)/float64(v1)
-	r9 := float64(a)/float64(v0) + float64(a)/float64(v1) + float64(b)/float64(v0) + float64(c)/float64(v0) + float64(c)/float64(v1) + float64(b)/float64(v1)
-	minL := min(r1, r2, r3, r4, r5, r6, r7, r8, r9)
-	return strconv.FormatFloat(minL, 'f', 15, 64)
+	// not my solution, this is answer
+
+	// релаксация ребер (https://habr.com/ru/articles/201588/)
+	// релаксация ребер -- выбор наименьшего из пути
+	a = min(a, b+c)
+	b = min(b, a+c)
+	c = min(c, a+b)
+
+	// home - market - home - post - home
+	ans := float64(a)/float64(v0) + float64(a)/float64(v1) + float64(b)/float64(v0) + float64(b)/float64(v1)
+	// home - market - post - home
+	ans = min(ans, float64(a)/float64(v0)+float64(c)/float64(v1)+float64(b)/float64(v2))
+	// home - post - market - home
+	ans = min(ans, float64(b)/float64(v0)+float64(c)/float64(v1)+float64(a)/float64(v2))
+	return fmt.Sprintf("%.15f", ans)
 }

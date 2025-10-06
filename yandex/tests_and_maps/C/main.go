@@ -25,6 +25,7 @@ func main() {
 }
 
 func passwords(password string) int {
+	// my onw solution
 	n := len(password)
 	if n <= 1 {
 		return 1
@@ -42,4 +43,18 @@ func passwords(password string) int {
 	}
 	unique := totalPairs - samePairs
 	return unique + 1
+}
+
+func passwords1(password string) int {
+	// solution from answer
+	n := len(password)
+	freq := make(map[rune]int)
+	for _, ch := range password {
+		freq[ch]++
+	}
+	var ans int
+	for _, val := range freq {
+		ans += val * (n - val)
+	}
+	return ans/2 + 1
 }

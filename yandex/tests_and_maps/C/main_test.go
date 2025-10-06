@@ -19,3 +19,12 @@ func TestTasks(t *testing.T) {
 		})
 	}
 }
+
+func TestTasks1(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase["name"].(string), func(t *testing.T) {
+			res := passwords1(testCase["input"].([]any)[0].(string))
+			assert.Equal(t, testCase["output"], res)
+		})
+	}
+}

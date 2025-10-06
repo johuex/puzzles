@@ -39,15 +39,18 @@ var testCases = []map[string]any{
 			"???",
 			"?+?",
 		}},
-		"output": 7, // BUG: но это неверно,
-		// тк я видимо неверно понял логику
+		"output": 7,
 	},
 }
 
 func TestTasks(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase["name"].(string), func(t *testing.T) {
-			res := pcq(testCase["input"].([]any)[2].([]string))
+			res := pcq(
+				testCase["input"].([]any)[0].(int),
+				testCase["input"].([]any)[1].(int),
+				testCase["input"].([]any)[2].([]string),
+			)
 			assert.Equal(t, testCase["output"], res)
 		})
 	}

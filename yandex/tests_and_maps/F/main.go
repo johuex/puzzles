@@ -18,7 +18,7 @@ func main() {
 	line = strings.TrimSpace(line)
 	lineArr := strings.Split(line, " ")
 	n, _ := strconv.Atoi(lineArr[0])
-	//k, _ := strconv.Atoi(lineArr[1])
+	m, _ := strconv.Atoi(lineArr[1])
 
 	lines := make([]string, n)
 	for i := range n {
@@ -26,7 +26,7 @@ func main() {
 		lines[i] = strings.TrimSpace(line)
 	}
 	// logic
-	ans := pcq(lines)
+	ans := pcq(n, m, lines)
 	// output
 	writer.WriteString(strconv.Itoa(ans))
 	writer.WriteByte('\n')
@@ -35,55 +35,34 @@ func main() {
 // goal: find max row and min column
 // max -- sum of + and .
 // min -- sum of - and .
-func pcq(lines []string) int {
-	lineSet := make(map[int]map[rune]int)
-	vertSet := make(map[int]map[rune]int)
-
-	// transform input
-	// TODO: кажется тут баг
-	for i, row := range lines {
-		lineSet[i] = make(map[rune]int)
-		for j, sym := range row {
-			if _, ok := vertSet[j]; !ok {
-				vertSet[j] = make(map[rune]int)
+func pcq(n, m int, lines []string) int {
+	rowSum := make([]int, n)
+	colSum := make([]int, m)
+	for i := range n {
+		for j := range m {
+			if lines[i][j] == '+' {
+				rowSum[i] += 1
+				colSum[j] += 1
 			}
-			vertSet[j][sym] += 1
-			lineSet[i][sym] += 1
-		}
-	}
-	// find max line
-	maxSum := -(len(vertSet))
-	for _, runeMap := range lineSet {
-		tempSum := 0
-		for runeSym, runeVal := range runeMap {
-			switch runeSym {
-			case '-':
-				tempSum -= runeVal
-			case '+', '?':
-				tempSum += runeVal
+			if lines[i][j] == '-' {
+				rowSum[i] -= 1
+				colSum[j] -= 1
+			}
+			if lines[i][j] == '?' {
+				rowSum[i] += 1
+				colSum[j] -= 1
 			}
 		}
-		if maxSum < tempSum {
-			maxSum = tempSum
-		}
 	}
-
-	// found min column
-	minSum := len(lineSet)
-	for _, runeMap := range vertSet {
-		tempSum := 0
-		for runeSym, runeVal := range runeMap {
-			switch runeSym {
-			case '-', '?':
-				tempSum -= runeVal
-			case '+':
-				tempSum += runeVal
+	ans := -2 * n * m
+	for i := range n {
+		for j := range m {
+			if lines[i][j] == '?' {
+				ans = max(ans, rowSum[i]-colSum[j])
+			} else {
+				ans = max(ans, rowSum[i]-colSum[j]-2)
 			}
 		}
-		if minSum > tempSum {
-			minSum = tempSum
-		}
 	}
-
-	return maxSum - minSum
+	return ans
 }

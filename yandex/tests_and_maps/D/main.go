@@ -47,6 +47,7 @@ func tasks(k int, taskThemes []int) []int {
 	ansIdx := 0
 
 	taskThemesCount := make(map[int]int)
+	// count tasks per theme
 	for _, i := range taskThemes {
 		if _, ok := taskThemesCount[i]; !ok {
 			taskThemesCount[i] = 0
@@ -55,6 +56,7 @@ func tasks(k int, taskThemes []int) []int {
 		taskThemesCount[i] += 1
 	}
 
+	// sort them by count
 	tSort := make([][]int, 0)
 	for key, value := range taskThemesCount {
 		tSort = append(tSort, []int{key, value})
@@ -83,6 +85,5 @@ func tasks(k int, taskThemes []int) []int {
 			break
 		}
 	}
-
 	return ans
 }

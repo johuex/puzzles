@@ -37,3 +37,12 @@ func TestTasks(t *testing.T) {
 		})
 	}
 }
+
+func TestTasks1(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase["name"].(string), func(t *testing.T) {
+			res := sumNum1(testCase["input"].([]any)[0].(int), testCase["input"].([]any)[1].(int))
+			assert.Equal(t, testCase["output"], res)
+		})
+	}
+}
