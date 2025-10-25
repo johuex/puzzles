@@ -1,0 +1,38 @@
+# my solution
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Delete on person p  (cost=20.94..32.69 rows=0 width=0) (actual time=0.153..0.154 rows=0 loops=1)
+   ->  Seq Scan on person p  (cost=20.94..32.69 rows=70 width=6) (actual time=0.137..0.138 rows=1 loops=1)
+         Filter: (NOT (ANY (id = (hashed SubPlan 1).col1)))
+         Rows Removed by Filter: 2
+         SubPlan 1
+           ->  Subquery Scan on a  (cost=16.39..20.94 rows=1 width=4) (actual time=0.095..0.103 rows=2 loops=1)
+                 Filter: (a.rank = 1)
+                 ->  WindowAgg  (cost=16.39..19.19 rows=140 width=528) (actual time=0.094..0.102 rows=2 loops=1)
+                       Run Condition: (rank() OVER (?) <= 1)
+                       ->  Sort  (cost=16.39..16.74 rows=140 width=520) (actual time=0.084..0.085 rows=3 loops=1)
+                             Sort Key: p_1.email, p_1.id
+                             Sort Method: quicksort  Memory: 25kB
+                             ->  Seq Scan on person p_1  (cost=0.00..11.40 rows=140 width=520) (actual time=0.002..0.003 rows=3 loops=1)
+ Planning Time: 0.327 ms
+ Execution Time: 0.212 ms
+(15 rows)
+
+
+
+
+# another solution
+                                                        QUERY PLAN                                                        
+--------------------------------------------------------------------------------------------------------------------------
+ Delete on person p1  (cost=13.15..26.83 rows=0 width=0) (actual time=0.105..0.107 rows=0 loops=1)
+   ->  Hash Join  (cost=13.15..26.83 rows=47 width=12) (actual time=0.079..0.081 rows=1 loops=1)
+         Hash Cond: ((p1.email)::text = (p2.email)::text)
+         Join Filter: (p1.id > p2.id)
+         Rows Removed by Join Filter: 4
+         ->  Seq Scan on person p1  (cost=0.00..11.40 rows=140 width=526) (actual time=0.027..0.029 rows=3 loops=1)
+         ->  Hash  (cost=11.40..11.40 rows=140 width=526) (actual time=0.024..0.025 rows=3 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on person p2  (cost=0.00..11.40 rows=140 width=526) (actual time=0.004..0.005 rows=3 loops=1)
+ Planning Time: 1.410 ms
+ Execution Time: 1.658 ms
+(11 rows)
