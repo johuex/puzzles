@@ -15,6 +15,7 @@ var testCases = []map[string]any{
 	{"name": "6", "input": []any{0, 0, 3}, "output": -1},
 	{"name": "7", "input": []any{0, 0, 1}, "output": -1},
 	{"name": "8", "input": []any{566, 239, 664660}, "output": 1234},
+	{"name": "9", "input": []any{5984, 6045, 8772}, "output": 6113},
 }
 
 func TestShelf(t *testing.T) {

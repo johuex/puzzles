@@ -29,7 +29,8 @@ func main() {
 	writer.WriteByte('\n')
 }
 
-func binSearch(l, r int, check func(int, []int) bool, params []int) int {
+// left binary search
+func lBinSearch(l, r int, check func(int, []int) bool, params []int) int {
 	for l < r {
 		m := (l + r) / 2
 		if check(m, params) {
@@ -41,17 +42,19 @@ func binSearch(l, r int, check func(int, []int) bool, params []int) int {
 	return l
 }
 
+// l -- square sideб enumeration
 func square(l int, params []int) bool {
 	a, b, s := params[0], params[1], params[2]
-	return l*l-l*(a+b)+a*b >= s
+	return l*l >= l*(a+b)-a*b+s
 }
 
 func shelf(a, b, s int) int {
-	rightBorder := max(a, b) * 10
-	minBorder := 0
+	rightBorder := max(a, b) * 1000
+	minBorder := min(a, b)
 	params := []int{a, b, s}
-	res := binSearch(minBorder, rightBorder, square, params)
-	if res*res-res*(a+b)+a*b != s {
+	res := lBinSearch(minBorder, rightBorder, square, params)
+
+	if res*res != res*(a+b)-a*b+s {
 		return -1
 	}
 
