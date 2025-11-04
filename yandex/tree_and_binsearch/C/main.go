@@ -48,7 +48,7 @@ func lBinSearch(l, r float64, check func(float64, []any) bool, params []any) flo
 			l = m
 		}
 	}
-	return (l + r) / 2
+	return l
 }
 
 func scale(k float64, params []any) bool {
