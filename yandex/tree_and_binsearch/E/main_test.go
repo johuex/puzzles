@@ -33,7 +33,7 @@ var testCases = []map[string]any{
 	},
 }
 
-func TestParent(t *testing.T) {
+func TestTaxes(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase["name"].(string), func(t *testing.T) {
 			res := taxes(

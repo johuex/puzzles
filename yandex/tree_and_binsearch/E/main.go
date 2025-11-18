@@ -72,25 +72,46 @@ func buildTree(relates, values []int) ([]*TreeLeaf, *TreeLeaf) {
 	return leafes, root
 }
 
-// TODO: algo works only with positive values
-// TODO: need to reimplement for also negative values
-func minTaxSum(leaf *TreeLeaf, sum int) int {
-	tempSum := sum
+func minTaxSum(leaf *TreeLeaf, inc, dec int) (int, int) {
+	tempInc := inc
+	tempDec := dec
 	for _, child := range leaf.childs {
-		sum += minTaxSum(child, tempSum)
+		rInc, rDec := minTaxSum(child, tempInc, tempDec)
+		inc += rInc
+		dec += rDec
+
 	}
-	if sum <= leaf.val {
-		sum = leaf.val
-	} else {
-		sum = sum + leaf.val
+	if inc == 0 && dec == 0 {
+		// it's leaf
+		if leaf.val < 0 {
+			inc = Abs(leaf.val)
+		} else {
+			dec = -Abs(leaf.val)
+		}
+		return inc, dec
 	}
-	return sum
+	if leaf.val != 0 {
+		diff := leaf.val + inc + dec
+		if diff > 0 {
+			dec -= diff
+		} else if diff < 0 {
+			inc -= diff
+		}
+	}
+	return inc, dec
 }
 
 func taxes(relates, values []int) int {
 	_, treeRoot := buildTree(relates, values)
 
-	res := minTaxSum(treeRoot, 0)
+	resInc, resDec := minTaxSum(treeRoot, 0, 0)
 
-	return res
+	return resInc - resDec
+}
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
