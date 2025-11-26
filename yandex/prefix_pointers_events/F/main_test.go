@@ -1,4 +1,4 @@
-package main
+package f
 
 import (
 	"testing"
@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO: upd test input
 var testCases = []map[string]any{
 	{
 		"name": "1",
