@@ -1,1 +1,1 @@
-https://contest.yandex.ru/contest/80940/enter/
+https://contest.yandex.ru/contest/80940/problems/
