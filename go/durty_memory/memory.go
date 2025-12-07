@@ -26,12 +26,12 @@ func GetDurtyMem(size int) []int {
 }
 
 func Transform(data []byte) []int {
-	sliceData := unsafe.Pointer(&data[0]) // pointer on first elem
-	sizeType := int(unsafe.Sizeof(0))
+	sliceData := unsafe.Pointer(&data[0]) // pointer on first elem of array
+	sizeType := int(unsafe.Sizeof(int(0)))
 	length := len(data) / sizeType
 
 	var result []int
-	resultPtr := (*slice)(unsafe.Pointer(&result))
+	resultPtr := (*slice)(unsafe.Pointer(&result)) // force converting
 	resultPtr.data = sliceData
 	resultPtr.len = length
 	resultPtr.cap = length
