@@ -1,0 +1,18 @@
+# my solution
+                              QUERY PLAN                               
+-----------------------------------------------------------------------
+ WindowAgg  (cost=128.91..161.27 rows=1850 width=20)
+   ->  Sort  (cost=128.89..133.52 rows=1850 width=12)
+         Sort Key: score DESC
+         ->  Seq Scan on scores  (cost=0.00..28.50 rows=1850 width=12)
+(4 rows)
+
+
+# another solution
+                               QUERY PLAN                                
+-------------------------------------------------------------------------
+ WindowAgg  (cost=128.91..161.27 rows=1850 width=20)
+   ->  Sort  (cost=128.89..133.52 rows=1850 width=12)
+         Sort Key: score DESC
+         ->  Seq Scan on scores s  (cost=0.00..28.50 rows=1850 width=12)
+(4 rows)
