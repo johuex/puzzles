@@ -56,7 +56,6 @@ func main() {
 }
 
 func compensation(serial, importance []int) []int {
-	res := []int{0, math.MaxInt64}
 	n := len(serial)
 
 	seasons := make([][]int, n+1)
@@ -89,13 +88,17 @@ func compensation(serial, importance []int) []int {
 		suffCostEpisode[i] = suffCostEpisode[i+1] + seasons[i][COST]
 		suffCost[i] = suffCost[i+1] + suffCostEpisode[i+1]*(seasons[i+1][LEN]-seasons[i][LEN])
 	}
+
+	best_len := 0
+	ans := math.MaxInt64
+
 	for i := 1; i <= n; i++ {
 		tmp := preCost[i] + suffCost[i]
-		if tmp < res[1] {
-			res[1] = tmp
-			res[0] = seasons[i][LEN]
+		if tmp < ans {
+			ans = tmp
+			best_len = seasons[i][LEN]
 		}
 	}
 
-	return res
+	return []int{best_len, ans}
 }
