@@ -1,0 +1,21 @@
+-- my solution
+                                                  QUERY PLAN                                                  
+--------------------------------------------------------------------------------------------------------------
+ Sort  (cost=57.82..59.60 rows=710 width=8) (actual time=0.165..0.166 rows=5 loops=1)
+   Sort Key: employee_id
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on employees e  (cost=0.00..24.20 rows=710 width=8) (actual time=0.046..0.133 rows=5 loops=1)
+ Planning Time: 0.361 ms
+ Execution Time: 0.220 ms
+(6 rows)
+
+-- another ?fastest? solution
+                                                  QUERY PLAN                                                  
+--------------------------------------------------------------------------------------------------------------
+ Sort  (cost=56.05..57.82 rows=710 width=8) (actual time=0.065..0.066 rows=5 loops=1)
+   Sort Key: employee_id
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on employees e  (cost=0.00..22.43 rows=710 width=8) (actual time=0.019..0.038 rows=5 loops=1)
+ Planning Time: 0.158 ms
+ Execution Time: 0.117 ms
+(6 rows)
