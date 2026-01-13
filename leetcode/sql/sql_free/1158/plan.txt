@@ -1,0 +1,38 @@
+# my solution
+                                                       QUERY PLAN                                                        
+-------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=194.78..459.41 rows=200 width=16) (actual time=0.102..0.109 rows=4 loops=1)
+   Group Key: u.user_id
+   ->  Merge Left Join  (cost=194.78..340.53 rows=9350 width=16) (actual time=0.066..0.071 rows=6 loops=1)
+         Merge Cond: (u.user_id = o.buyer_id)
+         ->  Sort  (cost=76.57..79.32 rows=1100 width=8) (actual time=0.045..0.045 rows=4 loops=1)
+               Sort Key: u.user_id
+               Sort Method: quicksort  Memory: 25kB
+               ->  Seq Scan on users u  (cost=0.00..21.00 rows=1100 width=8) (actual time=0.018..0.019 rows=4 loops=1)
+         ->  Sort  (cost=118.22..122.47 rows=1700 width=12) (actual time=0.016..0.017 rows=6 loops=1)
+               Sort Key: o.buyer_id
+               Sort Method: quicksort  Memory: 25kB
+               ->  Seq Scan on orders o  (cost=0.00..27.00 rows=1700 width=12) (actual time=0.004..0.005 rows=6 loops=1)
+ Planning Time: 0.676 ms
+ Execution Time: 0.315 ms
+(14 rows)
+
+
+
+# fastest solution
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=69.42..71.42 rows=200 width=16) (actual time=0.065..0.069 rows=4 loops=1)
+   Group Key: u.user_id
+   Batches: 1  Memory Usage: 40kB
+   ->  Hash Left Join  (cost=35.60..61.17 rows=1100 width=12) (actual time=0.051..0.055 rows=5 loops=1)
+         Hash Cond: (u.user_id = o.buyer_id)
+         ->  Seq Scan on users u  (cost=0.00..21.00 rows=1100 width=8) (actual time=0.014..0.015 rows=4 loops=1)
+         ->  Hash  (cost=35.50..35.50 rows=8 width=8) (actual time=0.024..0.024 rows=3 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on orders o  (cost=0.00..35.50 rows=8 width=8) (actual time=0.008..0.010 rows=3 loops=1)
+                     Filter: ((order_date >= '2019-01-01'::date) AND (order_date <= '2019-12-31'::date))
+                     Rows Removed by Filter: 3
+ Planning Time: 0.159 ms
+ Execution Time: 0.333 ms
+(13 rows)
