@@ -1,0 +1,30 @@
+# my solution
+                                                   QUERY PLAN                                                   
+----------------------------------------------------------------------------------------------------------------
+ Append  (cost=0.00..113.12 rows=5523 width=40) (actual time=0.019..0.025 rows=5 loops=1)
+   ->  Seq Scan on products p1  (cost=0.00..28.50 rows=1841 width=40) (actual time=0.018..0.019 rows=2 loops=1)
+         Filter: (store1 IS NOT NULL)
+   ->  Seq Scan on products p2  (cost=0.00..28.50 rows=1841 width=40) (actual time=0.002..0.003 rows=1 loops=1)
+         Filter: (store2 IS NOT NULL)
+         Rows Removed by Filter: 1
+   ->  Seq Scan on products p3  (cost=0.00..28.50 rows=1841 width=40) (actual time=0.002..0.002 rows=2 loops=1)
+         Filter: (store3 IS NOT NULL)
+ Planning Time: 0.233 ms
+ Execution Time: 0.048 ms
+(10 rows)
+
+
+# another solution
+                                                       QUERY PLAN                                                       
+------------------------------------------------------------------------------------------------------------------------
+ Append  (cost=0.00..113.12 rows=5523 width=40) (actual time=0.040..0.048 rows=5 loops=1)
+   ->  Seq Scan on products  (cost=0.00..28.50 rows=1841 width=40) (actual time=0.040..0.041 rows=2 loops=1)
+         Filter: (store1 IS NOT NULL)
+   ->  Seq Scan on products products_1  (cost=0.00..28.50 rows=1841 width=40) (actual time=0.003..0.003 rows=1 loops=1)
+         Filter: (store2 IS NOT NULL)
+         Rows Removed by Filter: 1
+   ->  Seq Scan on products products_2  (cost=0.00..28.50 rows=1841 width=40) (actual time=0.002..0.002 rows=2 loops=1)
+         Filter: (store3 IS NOT NULL)
+ Planning Time: 0.165 ms
+ Execution Time: 0.073 ms
+(10 rows)
