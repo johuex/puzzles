@@ -1,0 +1,33 @@
+# my solution 
+                                                   QUERY PLAN                                                    
+-----------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=40.77..40.94 rows=10 width=12) (actual time=0.046..0.048 rows=3 loops=1)
+   Group Key: user_id
+   ->  Sort  (cost=40.77..40.79 rows=10 width=12) (actual time=0.041..0.042 rows=4 loops=1)
+         Sort Key: user_id
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on logins l  (cost=0.00..40.60 rows=10 width=12) (actual time=0.012..0.015 rows=4 loops=1)
+               Filter: (EXTRACT(year FROM time_stamp) = '2020'::numeric)
+               Rows Removed by Filter: 5
+ Planning Time: 0.210 ms
+ Execution Time: 0.075 ms
+(10 rows)
+
+
+
+
+# another my solution (more faster)
+                                                                            QUERY PLAN                                                                            
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=40.77..40.94 rows=10 width=12) (actual time=0.044..0.047 rows=3 loops=1)
+   Group Key: user_id
+   ->  Sort  (cost=40.77..40.79 rows=10 width=12) (actual time=0.037..0.038 rows=4 loops=1)
+         Sort Key: user_id
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on logins l  (cost=0.00..40.60 rows=10 width=12) (actual time=0.011..0.013 rows=4 loops=1)
+               Filter: ((time_stamp >= '2020-01-01 00:00:00'::timestamp without time zone) AND (time_stamp < '2021-01-01 00:00:00'::timestamp without time zone))
+               Rows Removed by Filter: 5
+ Planning Time: 0.068 ms
+ Execution Time: 0.083 ms
+(10 rows)
+
