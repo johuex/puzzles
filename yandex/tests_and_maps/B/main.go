@@ -19,11 +19,11 @@ func main() {
 	line = strings.TrimSpace(line)
 	lineArr := strings.Split(line, " ")
 	a, _ := strconv.Atoi(lineArr[0])
-	b, _ := strconv.Atoi(lineArr[0])
-	c, _ := strconv.Atoi(lineArr[0])
-	v0, _ := strconv.Atoi(lineArr[0])
-	v1, _ := strconv.Atoi(lineArr[0])
-	v2, _ := strconv.Atoi(lineArr[0])
+	b, _ := strconv.Atoi(lineArr[1])
+	c, _ := strconv.Atoi(lineArr[2])
+	v0, _ := strconv.Atoi(lineArr[3])
+	v1, _ := strconv.Atoi(lineArr[4])
+	v2, _ := strconv.Atoi(lineArr[5])
 
 	// logic
 	ans := route(a, b, c, v0, v1, v2)
