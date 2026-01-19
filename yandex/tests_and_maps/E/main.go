@@ -101,7 +101,7 @@ func sumNum1(n, k int) int {
 	}
 	// смысл в том, что есть циклы из четных чисел и мы можем их посчитать
 	if n%10 == 0 {
-		print(n)
+		return n
 	} else {
 		cycles := k / 4
 		n += (2 + 4 + 6 + 8) * cycles
