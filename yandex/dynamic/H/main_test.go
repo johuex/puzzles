@@ -20,3 +20,12 @@ func TestWinner(t *testing.T) {
 		})
 	}
 }
+
+func TestWinnerDP(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase["name"].(string), func(t *testing.T) {
+			res := winnerDP(testCase["input"].([]any)[0].(int))
+			assert.Equal(t, testCase["output"], res)
+		})
+	}
+}
