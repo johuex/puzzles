@@ -1,0 +1,50 @@
+-- my solution
+                                                                                                          QUERY PLAN                                                                                                           
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=34.00..34.04 rows=1 width=150) (actual time=0.112..0.116 rows=3 loops=1)
+   Group Key: t.request_at
+   CTE banned
+     ->  Seq Scan on users u  (cost=0.00..15.50 rows=2 width=4) (actual time=0.006..0.007 rows=1 loops=1)
+           Filter: ((banned)::text = 'Yes'::text)
+           Rows Removed by Filter: 7
+   ->  Sort  (cost=18.50..18.51 rows=1 width=154) (actual time=0.096..0.097 rows=7 loops=1)
+         Sort Key: t.request_at
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on trips t  (cost=0.09..18.49 rows=1 width=154) (actual time=0.044..0.049 rows=7 loops=1)
+               Filter: (((request_at)::text >= '2013-10-01'::text) AND ((request_at)::text <= '2013-10-03'::text) AND (NOT (ANY (client_id = (hashed SubPlan 2).col1))) AND (NOT (ANY (driver_id = (hashed SubPlan 3).col1))))
+               Rows Removed by Filter: 3
+               SubPlan 2
+                 ->  CTE Scan on banned  (cost=0.00..0.04 rows=2 width=4) (actual time=0.008..0.009 rows=1 loops=1)
+               SubPlan 3
+                 ->  CTE Scan on banned banned_1  (cost=0.00..0.04 rows=2 width=4) (actual time=0.000..0.000 rows=1 loops=1)
+ Planning Time: 0.451 ms
+ Execution Time: 0.263 ms
+(18 rows)
+
+
+-- another solution
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=47.40..47.44 rows=1 width=150) (actual time=0.098..0.103 rows=3 loops=1)
+   Group Key: t.request_at
+   ->  Sort  (cost=47.40..47.41 rows=1 width=150) (actual time=0.083..0.084 rows=7 loops=1)
+         Sort Key: t.request_at
+         Sort Method: quicksort  Memory: 25kB
+         ->  Nested Loop  (cost=0.00..47.39 rows=1 width=150) (actual time=0.034..0.064 rows=7 loops=1)
+               Join Filter: (t.driver_id = v.users_id)
+               Rows Removed by Join Filter: 42
+               ->  Nested Loop  (cost=0.00..31.87 rows=1 width=154) (actual time=0.028..0.042 rows=7 loops=1)
+                     Join Filter: (t.client_id = u.users_id)
+                     Rows Removed by Join Filter: 63
+                     ->  Seq Scan on trips t  (cost=0.00..16.30 rows=2 width=158) (actual time=0.015..0.018 rows=10 loops=1)
+                           Filter: (((request_at)::text >= '2013-10-01'::text) AND ((request_at)::text <= '2013-10-03'::text))
+                     ->  Materialize  (cost=0.00..15.51 rows=2 width=4) (actual time=0.001..0.002 rows=7 loops=10)
+                           ->  Seq Scan on users u  (cost=0.00..15.50 rows=2 width=4) (actual time=0.005..0.006 rows=7 loops=1)
+                                 Filter: ((banned)::text = 'No'::text)
+                                 Rows Removed by Filter: 1
+               ->  Seq Scan on users v  (cost=0.00..15.50 rows=2 width=4) (actual time=0.001..0.002 rows=7 loops=7)
+                     Filter: ((banned)::text = 'No'::text)
+                     Rows Removed by Filter: 1
+ Planning Time: 1.056 ms
+ Execution Time: 0.196 ms
+(22 rows)
