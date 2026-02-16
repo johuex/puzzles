@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"os"
-	"slices"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -38,7 +38,7 @@ func main() {
 		points[i] = tmp
 	}
 
-	res := cntPoints2(segments, points)
+	res := cntPoints(segments, points)
 
 	resArr := make([]string, len(res))
 	for i := range len(res) {
@@ -48,69 +48,51 @@ func main() {
 	writer.WriteByte('\n')
 }
 
-func cntPoints(segments [][]int, points []int) []int {
-	res := make([]int, len(points))
-	for i := range len(res) {
-		for j := range len(segments) {
-			l := segments[j][0]
-			r := segments[j][1]
-
-			if min(l, r) <= points[i] && points[i] <= max(l, r) {
-				res[i] += 1
-			}
-		}
-	}
-	return res
+type Event struct {
+	Coord int
+	CType int
+	idx   int // для точек
 }
 
-func cntPoints2(segments [][]int, points []int) []int {
-	// TODO: переписать на event ???
-	mergeArr := make([]int, 0, len(segments)*2+len(points)) // all points                                           // current position
-	left := make(map[int]struct{}, len(segments))
-	right := make(map[int]struct{}, len(segments))
-	po := make(map[int]struct{}, len(points))
+func cntPoints(segments [][]int, points []int) []int {
+	// -1 -- конец отрезка, 0 -- точка запроса, 1 -- начало отрезка
+	res := make([]int, len(points))
 
-	uniqValues := make(map[int]struct{})
+	events := make([]Event, 0, len(points)+len(segments)*2)
 
-	for i := range len(segments) {
-		l := segments[i][0]
-		r := segments[i][1]
-		left[l] = struct{}{}
-		right[r] = struct{}{}
-		if _, ok := uniqValues[l]; !ok {
-			mergeArr = append(mergeArr, l)
-			uniqValues[l] = struct{}{}
-		}
-		if _, ok := uniqValues[r]; !ok {
-			mergeArr = append(mergeArr, r)
-			uniqValues[r] = struct{}{}
+	for _, segment := range segments {
+		start, end := segment[0], segment[1]
+		if start <= end {
+			events = append(events, Event{Coord: start, CType: 1})
+			events = append(events, Event{Coord: end, CType: -1})
+		} else {
+			// swap point if order is invalid
+			events = append(events, Event{Coord: end, CType: 1})
+			events = append(events, Event{Coord: start, CType: -1})
 		}
 	}
 
-	for _, point := range points {
-		if _, ok := uniqValues[point]; !ok {
-			mergeArr = append(mergeArr, point)
-			uniqValues[point] = struct{}{}
-		}
-		po[point] = struct{}{}
+	for idx, point := range points {
+		events = append(events, Event{Coord: point, CType: 0, idx: idx})
 	}
 
-	slices.Sort(mergeArr)
+	// first: by coord, than by event
+	sort.Slice(events, func(i, j int) bool {
+		if events[i].Coord != events[j].Coord {
+			return events[i].Coord < events[j].Coord
+		}
+		return events[i].CType > events[j].CType
+	})
 
-	var actualCnt int
-	res := make([]int, 0, len(points))
-	for _, elem := range mergeArr {
-		_, lOk := left[elem]
-		_, rOk := right[elem]
-		_, pOk := po[elem]
-		if lOk {
-			actualCnt += 1
-		}
-		if pOk {
-			res = append(res, actualCnt)
-		}
-		if rOk {
-			actualCnt -= 1
+	var cnt int
+	for _, event := range events {
+		switch event.CType {
+		case 1:
+			cnt++
+		case 0:
+			res[event.idx] = cnt
+		case -1:
+			cnt--
 		}
 	}
 
