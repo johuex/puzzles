@@ -1,4 +1,4 @@
-package main
+package pointssegments
 
 import (
 	"bufio"
