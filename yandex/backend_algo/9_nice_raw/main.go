@@ -30,15 +30,19 @@ func niceRaw(k int, raw string) int {
 	maxLen := 0
 	runes := []rune(raw)
 
+	// перебираем все буквы англ
 	for _, target := range words {
 		left := 0
 		replacements := 0
 
+		// ищем маскимальную последовательность без других букв
+		// другие буквы == replacements (замены)
 		for right := 0; right < len(runes); right++ {
 			if runes[right] != target {
 				replacements++
 			}
 
+			// двигаем левый указатель, если кол-во замен исчерпано
 			for replacements > k {
 				if runes[left] != target {
 					replacements--
