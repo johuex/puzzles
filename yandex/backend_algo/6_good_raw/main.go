@@ -23,7 +23,7 @@ func main() {
 		alphabet[i] = []int{i, cnv}
 	}
 
-	res := goodRow(alphabet)
+	res := goodRow2(alphabet)
 
 	writer.WriteString(strconv.Itoa(res))
 	writer.WriteByte('\n')
