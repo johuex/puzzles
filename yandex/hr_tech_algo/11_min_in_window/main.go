@@ -48,12 +48,12 @@ func minWindow(n, k int, arr []int) []int {
 	resIdx := 0
 
 	for i := 0; i < n; i++ {
-		// force pop left
+		// force pop left, out of window
 		if len(deq) > 0 && deq[0] < i-k+1 {
 			deq = deq[1:]
 		}
 
-		// before adding pop right idx that greater actual by value
+		// before adding -- pop right idx that greater actual by value (keep monotonously increasing function)
 		for len(deq) > 0 && arr[deq[len(deq)-1]] > arr[i] {
 			deq = deq[:len(deq)-1]
 		}
@@ -61,7 +61,7 @@ func minWindow(n, k int, arr []int) []int {
 		// push right
 		deq = append(deq, i)
 
-		// store min as deq[0]
+		// store min as deq[0], fill only if window is full
 		if i >= k-1 {
 			res[resIdx] = arr[deq[0]]
 			resIdx++
